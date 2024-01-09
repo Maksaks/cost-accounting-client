@@ -21,3 +21,11 @@ export interface IUser {
 	email: string
 	token: string
 }
+
+export interface ICategory {
+	title: string
+	id: number
+	createdAt: string
+	updatedAt: string
+	transactions: []
+}

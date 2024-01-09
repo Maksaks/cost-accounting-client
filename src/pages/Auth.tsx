@@ -45,10 +45,10 @@ const Auth: FC = () => {
 	return (
 		<div className='mt-40 flex flex-col justify-center items-center bg-slate-900'>
 			<h1 className='text-center text-xl mb-10 uppercase'>
-				{isLogin ? 'Login' : 'Registration'}
+				{isLogin ? 'Registration' : 'Login'}
 			</h1>
 			<form
-				onSubmit={isLogin ? loginHandler : registrationHandler}
+				onSubmit={isLogin ? registrationHandler : loginHandler}
 				className='flex w-1/3 flex-col mx-auto gap-5'
 			>
 				<input
@@ -70,7 +70,7 @@ const Auth: FC = () => {
 				</button>
 			</form>
 			<div className='flex justify-center mt-5'>
-				{isLogin ? (
+				{!isLogin ? (
 					<button
 						onClick={() => setIsLogin(isLogin => !isLogin)}
 						className='text-slate-300 hover:text-white'
