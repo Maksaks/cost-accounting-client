@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import { setTokenToLocalStorage } from '../helpers/localstorage.helper'
 import { AuthService } from '../services/auth.service'
+import { useAppDispatch } from '../store/hooks'
+import { login } from '../store/user/user.slice'
 
 const Auth: FC = () => {
 	const [email, setEmail] = useState<string>('')
 	const [password, setPassword] = useState<string>('')
 	const [isLogin, setIsLogin] = useState<boolean>(false)
+	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 
 	const registrationHandler = async (e: React.FormEvent<HTMLFormElement>) => {
 		try {
@@ -21,7 +27,21 @@ const Auth: FC = () => {
 			toast.error(error ? error.toString() : 'Uncaught error')
 		}
 	}
-	const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {}
+	const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+		try {
+			e.preventDefault()
+			const data = await AuthService.login({ email, password })
+			if (data) {
+				setTokenToLocalStorage(data.token)
+				dispatch(login(data))
+				toast.success('You are successfully logged in')
+				navigate('/')
+			}
+		} catch (err: any) {
+			const error = err.response?.data.message
+			toast.error(error ? error.toString() : 'Uncaught error')
+		}
+	}
 	return (
 		<div className='mt-40 flex flex-col justify-center items-center bg-slate-900'>
 			<h1 className='text-center text-xl mb-10 uppercase'>
