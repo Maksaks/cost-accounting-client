@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom'
+import ProtectedRoute from '../components/ProtectedRoute'
 import Auth from '../pages/Auth'
 import Categories from '../pages/Categories'
 import ErrorPage from '../pages/ErrorPage'
@@ -18,11 +19,19 @@ export const router = createBrowserRouter([
 			},
 			{
 				path: '/transactions',
-				element: <Transaction />,
+				element: (
+					<ProtectedRoute>
+						<Transaction />
+					</ProtectedRoute>
+				),
 			},
 			{
 				path: '/categories',
-				element: <Categories />,
+				element: (
+					<ProtectedRoute>
+						<Categories />
+					</ProtectedRoute>
+				),
 			},
 			{
 				path: '/auth',
