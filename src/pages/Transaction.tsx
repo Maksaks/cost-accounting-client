@@ -1,5 +1,40 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC } from 'react'
+import { toast } from 'react-toastify'
+import { instance } from '../api/axios.api'
 import TransactionForm from '../components/TransactionForm'
+import { ICategory } from '../types/types'
+
+export const transactionLoader = async () => {
+	const categories = await instance.get<ICategory[]>('/categories')
+
+	const data = {
+		categories: categories.data,
+	}
+	return data
+}
+
+export const transactionAction = async ({ request }: any) => {
+	switch (request.method) {
+		case 'POST': {
+			const formData = await request.formData()
+			const newTransaction = {
+				title: formData.get('title'),
+				amount: +formData.get('amount'),
+				category: formData.get('category'),
+				type: formData.get('type'),
+			}
+			await instance.post('/transactions', newTransaction)
+			toast.success('Transaction added')
+			return null
+		}
+		case 'DELETE': {
+			break
+		}
+	}
+}
 
 const Transaction: FC = () => {
 	return (

@@ -1,8 +1,12 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { FaPlus } from 'react-icons/fa6'
-import { Form } from 'react-router-dom'
+import { Form, useLoaderData } from 'react-router-dom'
+import { IResponseTransactionLoader } from '../types/types'
+import CategoryModal from './CategoryModal'
 
 const TransactionForm: FC = () => {
+	const [isVisibleModal, setIsVisibleModal] = useState(false)
+	const { categories } = useLoaderData() as IResponseTransactionLoader
 	return (
 		<div className='rounded-md bg-slate-800 p-4'>
 			<Form className='grid gap-2' action='/transactions' method='post'>
@@ -26,15 +30,26 @@ const TransactionForm: FC = () => {
 						required
 					/>
 				</label>
-				<label htmlFor='category' className='grid'>
-					<span>Category</span>
-					<select className='input' name='category' required>
-						<option value='1'>Salary</option>
-						<option value='2'>Gift</option>
-						<option value='3'>Grocery</option>
-					</select>
-				</label>
-				<button className='max-w-fit flex items-center gap-2 text-white/50 mt-2 hover:text-white'>
+				{categories.length ? (
+					<label htmlFor='category' className='grid'>
+						<span>Category</span>
+						<select className='input' name='category' required>
+							{categories.map((category, index) => (
+								<option key={index} value={category.id}>
+									{category.title}
+								</option>
+							))}
+						</select>
+					</label>
+				) : (
+					<h1 className='mt-1 text-red-300'>
+						To continue create a category...
+					</h1>
+				)}
+				<button
+					className='max-w-fit flex items-center gap-2 text-white/50 hover:text-white'
+					onClick={() => setIsVisibleModal(true)}
+				>
 					<FaPlus />
 					<span>Manage Categories:</span>
 				</button>
@@ -60,6 +75,9 @@ const TransactionForm: FC = () => {
 				</div>
 				<button className='btn btn-green max-w-fit mt-2'>Submit</button>
 			</Form>
+			{isVisibleModal && (
+				<CategoryModal type='post' setVisibleModal={setIsVisibleModal} />
+			)}
 		</div>
 	)
 }
